@@ -1,0 +1,10 @@
+{
+  "name": "ai-project-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test engine/*.test.mjs server/*.test.mjs",
+    "workflow:demo": "node engine/cli.mjs start engine/examples/development-delivery.json",
+    "api": "node server/main.mjs"
+  }
+}

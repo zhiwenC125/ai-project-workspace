@@ -1,0 +1,37 @@
+{
+  "id": "development-delivery",
+  "version": "1",
+  "startStepId": "start",
+  "steps": [
+    {
+      "id": "start",
+      "type": "start",
+      "next": "harness-review"
+    },
+    {
+      "id": "harness-review",
+      "type": "harness",
+      "task": "保持只读。检查当前目录与工作项 {{workItemTitle}} 相关的文件，并给出一段不超过 100 字的状态摘要。",
+      "outputKey": "harnessSummary",
+      "next": "human-review"
+    },
+    {
+      "id": "human-review",
+      "type": "decision",
+      "on": {
+        "approve": "completed",
+        "reject": "rejected"
+      }
+    },
+    {
+      "id": "completed",
+      "type": "end",
+      "outcome": "succeeded"
+    },
+    {
+      "id": "rejected",
+      "type": "end",
+      "outcome": "failed"
+    }
+  ]
+}

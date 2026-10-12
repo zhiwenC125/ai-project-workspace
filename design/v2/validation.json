@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"mutatedNodeIds\":[\"21:420\",\"21:416\",\"21:429\"],\"audit\":[{\"id\":\"20:163\",\"name\":\"V2 · 01 项目流程画布\",\"overflow\":[],\"counts\":{\"FRAME\":22,\"TEXT\":82,\"INSTANCE\":26,\"VECTOR\":5},\"fonts\":[\"Noto Sans SC\"],\"imageNodes\":[],\"reactions\":10},{\"id\":\"20:299\",\"name\":\"V2 · 02 节点状态\",\"overflow\":[],\"counts\":{\"FRAME\":27,\"TEXT\":87,\"INSTANCE\":28,\"VECTOR\":5},\"fonts\":[\"Noto Sans SC\"],\"imageNodes\":[],\"reactions\":15},{\"id\":\"20:447\",\"name\":\"V2 · 03 节点工作空间\",\"overflow\":[],\"counts\":{\"FRAME\":32,\"TEXT\":94,\"INSTANCE\":32},\"fonts\":[\"Noto Sans SC\"],\"imageNodes\":[],\"reactions\":12},{\"id\":\"21:317\",\"name\":\"V2 · 04 Harness 任务会话\",\"overflow\":[],\"counts\":{\"FRAME\":37,\"TEXT\":80,\"INSTANCE\":25},\"fonts\":[\"Noto Sans SC\"],\"imageNodes\":[],\"reactions\":13},{\"id\":\"21:460\",\"name\":\"V2 · 00 跨项目空间\",\"overflow\":[],\"counts\":{\"FRAME\":21,\"TEXT\":69,\"INSTANCE\":23,\"VECTOR\":4},\"fonts\":[\"Noto Sans SC\"],\"imageNodes\":[],\"reactions\":11}]}"
+    }
+  ],
+  "isError": false
+}

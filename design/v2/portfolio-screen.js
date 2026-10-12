@@ -1,0 +1,12 @@
+const {screen,body}=shell('V2 · 00 跨项目空间','跨项目空间','以项目为节点，关联依赖、文档与交付物；点击项目进入内部流程。','portfolio',6900);
+const graph=canvas('跨项目关系画布',1024,744);add(body,graph);grid(graph,1024,744);place(graph,text('TEAM SPACE / 3 个项目 · 1 个共享文档','caption','muted'),32,28);
+wire(graph,'平台项目依赖主项目','M 604 300 C 670 300 660 160 724 160 M 716 154 L 724 160 L 716 166','accent');wire(graph,'发布项目依赖主项目','M 604 338 C 670 338 660 528 724 528 M 716 522 L 724 528 L 716 534','accent');wire(graph,'共享文档引用','M 276 150 C 310 150 320 276 352 276','edge',true);
+const core=flow({Stage:'PROJECT / 01',Title:'研发工作台 MVP',Progress:'5 / 12 工作项已完成',Execution:'开发实现 · 2 项待评审',Owner:'Alan · GitHub'},'accent',true);place(graph,core,368,252);links.push({id:core.id,target:'canvas'});
+const coding=flow({Stage:'PROJECT / 02',Title:'公司 CODING 接入',Progress:'待规划 · 尚未启动',Execution:'依赖：平台适配契约',Owner:'团队项目 · CODING'},'amber');place(graph,coding,736,80);
+const release=flow({Stage:'PROJECT / 03',Title:'团队试用与交付',Progress:'待规划 · 尚未启动',Execution:'依赖：首条研发闭环',Owner:'Alan · 跨平台'},'amber');place(graph,release,736,448);
+const doc=border(stack('共享方案文档',236,126,'surface',16,8));add(doc,text('共享文档','caption','muted'),text('平台连接规范','section'),text('被 2 个项目引用','small','muted'));place(graph,doc,40,88);
+place(graph,text('依赖平台接口','caption','accent'),622,216);place(graph,text('依赖交付闭环','caption','accent'),622,448);place(graph,text('引用','caption','quiet'),295,176);
+const legend=border(stack('关系说明',276,132,'surface',16,12));add(legend,text('关系可见，执行有边界','label'),text('实线：项目依赖\n虚线：文档引用\n依赖关系不会直接触发自动化。','small','muted'));place(graph,legend,40,500);
+place(graph,text('空间位置仅用于组织视图；状态以项目业务数据为准。','caption','quiet'),368,688);
+const side=stack('项目摘要',352,744,'surface',24,16);add(body,side);add(side,text('研发工作台 MVP','section'),badge('当前项目','accent','soft',112),text('目标：把个人助手扩展为流程驱动的\n研发工作台，先接入个人 GitHub。','body','muted',304));add(side,button('进入项目流程 →','canvas',true,304));add(side,text('项目关系','label'),text('输出：平台适配契约\n被依赖：公司 CODING 接入\n后续：团队试用与交付','body','muted',304));add(side,text('共享上下文','label'),text('平台连接规范\n研发闭环验收标准','body','muted',304));space(side,true);add(side,text('个人会话默认私有','label'),text('将方案或产物关联到团队项目时，\n明确选择共享范围。','small','muted',304),text('此页为跨项目关系的首版设计。','caption','quiet'));
+return evidence(screen);

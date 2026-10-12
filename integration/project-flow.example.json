@@ -1,0 +1,247 @@
+{
+  "schemaStatus": "proposed-ui-fixture-native-workflow",
+  "project": {
+    "id": "workspace-mvp",
+    "name": "研发工作台 MVP"
+  },
+  "nodes": [
+    {
+      "id": "discovery",
+      "title": "需求澄清",
+      "kind": "phase",
+      "projectId": "workspace-mvp",
+      "workItemIds": [
+        "WS-101",
+        "WS-102"
+      ],
+      "acceptanceCriteria": [
+        "需求范围与验收标准已确认"
+      ],
+      "position": {
+        "x": 40,
+        "y": 128
+      },
+      "revision": 1
+    },
+    {
+      "id": "design",
+      "title": "方案与设计",
+      "kind": "phase",
+      "projectId": "workspace-mvp",
+      "workItemIds": [
+        "WS-110"
+      ],
+      "acceptanceCriteria": [
+        "平台连接方案通过评审"
+      ],
+      "position": {
+        "x": 372,
+        "y": 128
+      },
+      "revision": 1
+    },
+    {
+      "id": "development",
+      "title": "开发实现",
+      "kind": "phase",
+      "projectId": "workspace-mvp",
+      "workItemIds": [
+        "WS-131",
+        "WS-129",
+        "WS-134",
+        "WS-128",
+        "WS-127",
+        "WS-124",
+        "WS-125"
+      ],
+      "acceptanceCriteria": [
+        "工作项通过代码评审并满足阶段交付条件"
+      ],
+      "position": {
+        "x": 704,
+        "y": 128
+      },
+      "revision": 1
+    },
+    {
+      "id": "validation",
+      "title": "测试与验收",
+      "kind": "phase",
+      "projectId": "workspace-mvp",
+      "workItemIds": [
+        "WS-140"
+      ],
+      "acceptanceCriteria": [
+        "测试通过且负责人确认验收"
+      ],
+      "position": {
+        "x": 704,
+        "y": 440
+      },
+      "revision": 1
+    },
+    {
+      "id": "release",
+      "title": "发布与复盘",
+      "kind": "phase",
+      "projectId": "workspace-mvp",
+      "workItemIds": [
+        "WS-150"
+      ],
+      "acceptanceCriteria": [
+        "交付完成并归档复盘"
+      ],
+      "position": {
+        "x": 372,
+        "y": 440
+      },
+      "revision": 1
+    }
+  ],
+  "relations": [
+    {
+      "id": "edge-0",
+      "kind": "delivery_order",
+      "source": {
+        "kind": "node",
+        "id": "discovery"
+      },
+      "target": {
+        "kind": "node",
+        "id": "design"
+      },
+      "label": "需求确认"
+    },
+    {
+      "id": "edge-1",
+      "kind": "delivery_order",
+      "source": {
+        "kind": "node",
+        "id": "design"
+      },
+      "target": {
+        "kind": "node",
+        "id": "development"
+      },
+      "label": "方案通过"
+    },
+    {
+      "id": "edge-2",
+      "kind": "delivery_order",
+      "source": {
+        "kind": "node",
+        "id": "development"
+      },
+      "target": {
+        "kind": "node",
+        "id": "validation"
+      },
+      "label": "交付后进入"
+    },
+    {
+      "id": "edge-3",
+      "kind": "delivery_order",
+      "source": {
+        "kind": "node",
+        "id": "validation"
+      },
+      "target": {
+        "kind": "node",
+        "id": "release"
+      },
+      "label": "验收通过"
+    }
+  ],
+  "workItems": [
+    {
+      "id": "WS-101",
+      "title": "确认首版范围",
+      "projectNodeId": "discovery",
+      "status": "done"
+    },
+    {
+      "id": "WS-102",
+      "title": "确认验收标准",
+      "projectNodeId": "discovery",
+      "status": "done"
+    },
+    {
+      "id": "WS-110",
+      "title": "完成平台连接方案",
+      "projectNodeId": "design",
+      "status": "done"
+    },
+    {
+      "id": "WS-131",
+      "title": "同步外部 Issue",
+      "projectNodeId": "development",
+      "status": "todo",
+      "dependencyIds": [
+        "WS-128"
+      ]
+    },
+    {
+      "id": "WS-129",
+      "title": "工作项执行记录",
+      "projectNodeId": "development",
+      "status": "in_progress",
+      "runStatus": "running"
+    },
+    {
+      "id": "WS-134",
+      "title": "执行状态回写",
+      "projectNodeId": "development",
+      "status": "in_progress",
+      "runStatus": "failed"
+    },
+    {
+      "id": "WS-128",
+      "title": "实现 GitHub 仓库绑定",
+      "projectNodeId": "development",
+      "status": "in_review",
+      "runStatus": "waiting_for_human"
+    },
+    {
+      "id": "WS-127",
+      "title": "确认错误反馈实现",
+      "projectNodeId": "development",
+      "status": "in_review"
+    },
+    {
+      "id": "WS-124",
+      "title": "建立仓库配置结构",
+      "projectNodeId": "development",
+      "status": "done"
+    },
+    {
+      "id": "WS-125",
+      "title": "定义平台适配契约",
+      "projectNodeId": "development",
+      "status": "done"
+    },
+    {
+      "id": "WS-140",
+      "title": "团队权限场景验收",
+      "projectNodeId": "validation",
+      "status": "todo"
+    },
+    {
+      "id": "WS-150",
+      "title": "发布与复盘",
+      "projectNodeId": "release",
+      "status": "todo"
+    }
+  ],
+  "automationBindings": [
+    {
+      "id": "development-delivery",
+      "projectNodeId": "development",
+      "engine": "native",
+      "definitionId": "development-delivery",
+      "workflowKey": "development-delivery",
+      "definitionVersion": "1",
+      "trigger": "manual",
+      "enabled": true
+    }
+  ]
+}

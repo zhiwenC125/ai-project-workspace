@@ -1,0 +1,30 @@
+{
+  "schemaStatus": "proposed-not-yet-implemented",
+  "platform": {
+    "provider": "github",
+    "baseUrl": "https://api.github.com",
+    "credentialRef": "workspace/github/personal"
+  },
+  "coding": {
+    "enabled": false,
+    "baseUrl": "",
+    "credentialRef": "workspace/coding/company",
+    "capabilities": []
+  },
+  "agent": {
+    "provider": "deepseek-harness",
+    "command": "node",
+    "args": [
+      "integration/deepseek-harness-runner.mjs"
+    ],
+    "workingDirectory": ".",
+    "transport": "local-process",
+    "nativeEventSchemaVerified": true,
+    "integrationStatus": "connected-codex-subscription"
+  },
+  "workflow": {
+    "provider": "native",
+    "enabled": true,
+    "integrationStatus": "mvp-running"
+  }
+}
