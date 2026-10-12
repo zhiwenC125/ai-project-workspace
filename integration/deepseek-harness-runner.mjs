@@ -173,14 +173,14 @@ function run(options) {
   });
   child.once('close', async (code, signal) => {
     await rm(temporaryDir, { recursive: true, force: true });
-    if (code === 0) {
+    if (code === 0 && !sawError) {
       emit({ type: 'status', status: 'succeeded' });
       return;
     }
     if (!sawError) {
       emit({ type: 'error', message: stderr.trim().slice(-3000) || `Harness exited with code ${code}`, recovery: 'manual' });
     }
-    if (!sawTerminalStatus) emit({ type: 'status', status: signal ? 'cancelled' : 'failed', reason: signal ?? `exit_${code}` });
+    if (!sawTerminalStatus) emit({ type: 'status', status: signal ? 'cancelled' : 'failed', reason: signal ?? (sawError ? 'HARNESS_ERROR' : `exit_${code}`) });
     process.exitCode = code || 1;
   });
 

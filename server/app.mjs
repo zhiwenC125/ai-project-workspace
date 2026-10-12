@@ -37,7 +37,7 @@ async function body(request) {
   }
 }
 
-export async function createApp({ token, store = new FileRunStore(), harness = new HarnessExecutor(), fixture, definition } = {}) {
+export async function createApp({ token, store = new FileRunStore(), harness = new HarnessExecutor(), fixture, definition, runtime = { mode: 'harness', workingDirectory: process.env.DSH_WORKING_DIRECTORY ?? process.cwd() } } = {}) {
   if (!token || token.length < 16) throw new Error('WORKBENCH_TOKEN must contain at least 16 characters');
   fixture ??= JSON.parse(await readFile(path.join(ROOT, 'integration/project-flow.example.json'), 'utf8'));
   definition ??= JSON.parse(await readFile(path.join(ROOT, 'engine/examples/development-delivery.json'), 'utf8'));
@@ -46,14 +46,25 @@ export async function createApp({ token, store = new FileRunStore(), harness = n
   const item = id => fixture.workItems.find(value => value.id === id);
   const node = id => fixture.nodes.find(value => value.id === id);
   const binding = nodeId => fixture.automationBindings.find(value => value.projectNodeId === nodeId && value.enabled);
+  const mutatingRuns = new Set();
+  const assets = { '/': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/style.css': ['style.css', 'text/css'] };
 
   async function handle(request, response) {
+    let mutationKey;
     try {
       const pathname = new URL(request.url, 'http://localhost').pathname;
+      if (request.method === 'GET' && assets[pathname]) {
+        const [file, type] = assets[pathname];
+        const content = await readFile(path.join(ROOT, 'web', file), 'utf8');
+        response.writeHead(200, { 'content-type': `${type}; charset=utf-8`, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'content-security-policy': "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'" });
+        response.end(content);
+        return;
+      }
       if (pathname === '/health' && request.method === 'GET') return send(response, 200, { status: 'ok' });
       if (request.headers.authorization !== `Bearer ${token}`) return send(response, 401, { error: 'unauthorized' });
       if (!pathname.startsWith('/api/')) fail(404, 'route not found');
       const parts = pathname.split('/').filter(Boolean);
+      if (pathname === '/api/runtime' && request.method === 'GET') return send(response, 200, { ...runtime, version: '0.1.0-alpha.1' });
       if (request.method === 'GET' && pathname === '/api/projects') return send(response, 200, { projects: [{ ...project, source: 'fixture' }] });
       if (request.method === 'GET' && parts[1] === 'projects' && parts[2] === project.id && parts[3] === 'flow' && parts.length === 4) {
         return send(response, 200, { project, nodes: fixture.nodes, relations: fixture.relations, automationBindings: fixture.automationBindings, source: 'fixture' });
@@ -82,6 +93,11 @@ export async function createApp({ token, store = new FileRunStore(), harness = n
         }
       }
       if (parts[1] === 'runs' && parts[2] && parts.length <= 4) {
+        if (request.method === 'POST') {
+          if (mutatingRuns.has(parts[2])) fail(409, 'run is being updated; refresh and try again');
+          mutationKey = parts[2];
+          mutatingRuns.add(mutationKey);
+        }
         const run = await store.get(parts[2]);
         if (!run) fail(404, 'run not found');
         if (request.method === 'GET' && parts.length === 3) return send(response, 200, { run });
@@ -101,9 +117,11 @@ export async function createApp({ token, store = new FileRunStore(), harness = n
       }
       fail(404, 'route not found');
     } catch (error) {
-      const status = error.status ?? (error.message?.startsWith('invalid workflow run id') ? 400 : 500);
+      const status = error.status ?? (error.message?.startsWith('invalid workflow run id') ? 400 : error.message?.startsWith('idempotency key belongs') ? 409 : 500);
       send(response, status, { error: status === 500 ? 'internal server error' : error.message });
       if (status === 500) process.stderr.write(`${error.stack ?? error}\n`);
+    } finally {
+      if (mutationKey) mutatingRuns.delete(mutationKey);
     }
   }
 

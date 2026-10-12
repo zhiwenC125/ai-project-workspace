@@ -49,7 +49,11 @@ export class NativeWorkflowEngine {
       throw new Error('start requires idempotencyKey, workItemId and actorId');
     }
     const key = request.idempotencyKey;
-    if (this.pendingStarts.has(key)) return this.pendingStarts.get(key);
+    if (this.pendingStarts.has(key)) {
+      const existing = await this.pendingStarts.get(key);
+      if (existing.definitionId !== definition.id || existing.workItemId !== request.workItemId) throw new Error('idempotency key belongs to another workflow request');
+      return existing;
+    }
     const pending = (async () => {
       const existing = await this.store.findByIdempotencyKey(request.idempotencyKey);
       if (existing) {

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>研发工作台 · 测试版</title><link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script></head>
+<body>
+<aside class="sidebar"><a class="brand" href="/">◈ <span>研发工作台<small>AI PROJECT WORKSPACE</small></span></a><div class="space-label">我的空间 <span>本地</span></div><div class="nav-item active">⌘　项目流程</div><div class="sidebar-project">研发工作台 MVP<small>项目 → 阶段 → 工作项 → 执行</small></div><div class="sidebar-bottom"><span class="avatar">我</span><div>个人测试空间<small>0.1.0-alpha.1</small></div></div></aside>
+<main>
+<header><div class="breadcrumb">我的空间 <span>/</span> 研发工作台 MVP</div><span id="mode" class="badge">连接中</span></header>
+<section class="heading"><div><p class="eyebrow">PROJECT FLOW</p><h1>从项目全局，走进每一步。</h1><p>选择流程节点，查看工作项，再交给 Harness 执行。</p></div><button id="refresh" class="secondary">↻ 刷新状态</button></section>
+<div class="notice"><span class="notice-dot"></span><span id="notice">项目和工作项为演示数据，运行记录保存在本机。</span></div>
+<div id="error" class="error" role="alert" hidden></div>
+<section class="canvas" aria-label="项目流程"><div class="canvas-top"><span>项目流程画布</span><span>5 个阶段 · 顺序交付</span></div><div id="flow" class="flow"></div><div class="canvas-bottom"><span>点击节点展开工作空间</span><span>需求 → 设计 → 开发 → 验收 → 发布</span></div></section>
+<section class="workspace"><div class="items-panel"><div class="panel-head"><div><p class="eyebrow">NODE WORKSPACE</p><h2 id="node-title">开发实现</h2></div><span id="item-count" class="badge"></span></div><p id="criteria" class="criteria"></p><div id="items" class="items"></div></div>
+<div class="run-panel"><div class="panel-head"><div><p class="eyebrow">HARNESS</p><h2 id="task-title">选择一个工作项</h2></div><span id="run-status" class="badge">未启动</span></div><p id="task-meta" class="criteria">查看工作项的执行记录和结果。</p><div class="run-actions"><button id="start" disabled>启动只读分析 ↗</button><label class="history-label">历史运行<select id="history" aria-label="历史运行"><option value="">暂无运行</option></select></label></div><div id="run-output" class="output" aria-live="polite">在左侧选择工作项，即可启动一次真实的 Harness 只读分析。</div><div id="decision" class="decision" hidden><div><strong>等待你的评审</strong><p>核对分析结果后，决定本次运行是否通过。</p></div><div><button id="approve">通过</button><button id="reject" class="secondary">退回</button></div></div><details><summary>执行步骤与记录</summary><ol id="events" class="events"></ol></details></div></section>
+<footer><span id="directory">执行目录：读取中…</span><span>本地运行 · 数据不自动同步到 GitHub</span></footer>
+</main>
+<dialog id="auth"><form id="auth-form"><p class="eyebrow">LOCAL WORKSPACE</p><h2>连接本机工作台</h2><p>请从启动终端复制完整的本地地址打开，或输入该地址中的连接令牌。</p><input id="token" type="password" aria-label="连接令牌" placeholder="连接令牌" required minlength="16"><button>连接</button><p id="auth-error" role="alert"></p></form></dialog>
+</body></html>

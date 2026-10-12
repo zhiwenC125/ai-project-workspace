@@ -23,17 +23,19 @@ export class HarnessExecutor {
       let stderr = '';
       const lines = readline.createInterface({ input: child.stdout });
       lines.on('line', line => {
-        const event = JSON.parse(line);
-        if (event.type === 'session') sessionId = event.sessionId;
-        if (event.type === 'output') output += event.text;
-        if (event.type === 'error') reason = event.message;
+        try {
+          const event = JSON.parse(line);
+          if (event.type === 'session') sessionId = event.sessionId;
+          if (event.type === 'output') output += event.text;
+          if (event.type === 'error') reason = event.message;
+        } catch { reason = 'Harness returned invalid event data'; }
       });
       child.stderr.on('data', chunk => { stderr += chunk; });
       child.once('error', reject);
       child.once('close', code => {
         this.children.delete(request.workflowRunId);
         resolve({
-        status: code === 0 ? 'succeeded' : 'failed',
+        status: code === 0 && !reason ? 'succeeded' : 'failed',
         sessionId,
         output,
         ...(reason || stderr ? { reason: reason ?? stderr.trim() } : {}),

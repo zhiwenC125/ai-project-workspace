@@ -1,0 +1,27 @@
+name: Test and publish preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [package.json, .github/workflows/release.yml]
+permissions:
+  contents: write
+concurrency:
+  group: preview-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify preview
+        run: npm test
+      - name: Package and publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          archive="ai-project-workspace-${version}.zip"
+          git archive --format=zip --prefix="ai-project-workspace/" -o "$archive" HEAD
+          gh release create "v${version}" "$archive" --target "$GITHUB_SHA" --title "v${version} · 本地测试版" --notes-file RELEASE_NOTES.md --prerelease

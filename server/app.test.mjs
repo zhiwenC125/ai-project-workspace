@@ -23,13 +23,18 @@ test('local API requires a token and runs a bound work item through approval', a
     incoming.url = url;
     incoming.method = options.method ?? 'GET';
     incoming.headers = options.headers ?? {};
-    const outgoing = { status: 200, writeHead(status, headers) { this.status = status; this.headers = headers; }, end(data) { this.value = JSON.parse(data); } };
+    const outgoing = { status: 200, writeHead(status, headers) { this.status = status; this.headers = headers; }, end(data) { this.value = this.headers['content-type'].includes('application/json') ? JSON.parse(data) : data; } };
     await handle(incoming, outgoing);
     return outgoing;
   };
   const api = (url, options = {}) => request(url, { ...options, headers: { authorization: 'Bearer 0123456789abcdef', ...(options.body ? { 'content-type': 'application/json' } : {}) } });
   try {
+    const page = await request('/');
+    assert.equal(page.status, 200);
+    assert.match(page.value, /启动只读分析/);
+    assert.ok(!page.value.includes('0123456789abcdef'));
     assert.equal((await request('/api/projects')).status, 401);
+    assert.equal((await api('/api/runtime')).value.mode, 'harness');
     const flow = (await api('/api/projects/workspace-mvp/flow')).value;
     assert.equal(flow.nodes.length, 5);
     assert.equal(flow.source, 'fixture');
@@ -39,6 +44,8 @@ test('local API requires a token and runs a bound work item through approval', a
     const first = (await start()).value;
     const second = (await start()).value;
     assert.equal(first.run.id, second.run.id);
+    const collision = await api('/api/work-items/WS-129/runs', { method: 'POST', body: JSON.stringify({ actorId: 'user-1', idempotencyKey: 'request-1' }) });
+    assert.equal(collision.status, 409);
     let current;
     for (let count = 0; count < 50; count += 1) {
       current = (await api(`/api/runs/${first.run.id}`)).value.run;
@@ -50,8 +57,10 @@ test('local API requires a token and runs a bound work item through approval', a
     assert.match(calls[0].task, /WS-128|GitHub/);
     const invalid = await api(`/api/runs/${current.id}/decisions`, { method: 'POST', body: JSON.stringify({ actorId: 'reviewer', decision: 'approve', expectedRevision: -1 }) });
     assert.equal(invalid.status, 409);
-    const approved = await api(`/api/runs/${current.id}/decisions`, { method: 'POST', body: JSON.stringify({ actorId: 'reviewer', decision: 'approve', expectedRevision: current.revision }) });
+    const decide = () => api(`/api/runs/${current.id}/decisions`, { method: 'POST', body: JSON.stringify({ actorId: 'reviewer', decision: 'approve', expectedRevision: current.revision }) });
+    const [approved, duplicate] = await Promise.all([decide(), decide()]);
     assert.equal(approved.value.run.status, 'succeeded');
+    assert.equal(duplicate.status, 409);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

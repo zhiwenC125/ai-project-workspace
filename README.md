@@ -2,7 +2,11 @@
 
 当前方案为 **V2：跨项目空间 → 项目流程画布 → 节点工作空间 → Harness 任务会话**。
 
-本仓库目前包含 Figma 设计、设计说明、演示数据、内部接口契约、DeepSeek Harness CLI 适配器、自研工作流引擎及本地 HTTP API。Harness 已通过 Codex 订阅插件完成真实任务；工作流已验证启动、Harness 步骤、人工等待/恢复和成功结束。前端尚未连接 API；GitHub/CODING 业务适配器尚未实现。
+## 运行测试版 0.1.0-alpha.1
+
+需要 Node.js 20+，无第三方 npm 依赖。在项目目录执行 `npm start`（真实 Harness），或 `npm run demo`（模拟执行）。macOS 也可以双击 `启动测试版.command`。启动器会自动打开浏览器，操作步骤与测试边界见 [TESTING.md](TESTING.md)。
+
+本仓库目前包含 Figma 设计、设计说明、演示数据、内部接口契约、DeepSeek Harness CLI 适配器、自研工作流引擎、本地 HTTP API 及浏览器测试界面。Harness 已通过 Codex 订阅插件完成真实任务；工作流已验证启动、Harness 步骤、人工等待/恢复和成功结束。测试界面已连接本地 API；GitHub/CODING 业务适配器尚未实现。
 
 ## 查看 V2
 
